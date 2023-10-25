@@ -64,7 +64,10 @@ public class JNotify {
         String libFullName;
         if (osName.equals("linux")) {
             try {
-                if (System.getProperty("os.arch").contains("64")) {
+                String arch = System.getProperty("os.arch");
+                if (arch.contains("aarch64")) {
+                    libFullName = "libjnotify_arm64.so";
+                } else if (arch.contains("64")) {
                     libFullName = "libjnotify_64bit.so";
                 } else {
                     libFullName = "libjnotify_32bit.so";

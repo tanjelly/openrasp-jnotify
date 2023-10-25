@@ -8,4 +8,32 @@
 2. 支持更低版本的 linux内核
 3. 支持32位linux
 
-使用 IDEA 编译即可
+# BUILD
+
+## libjnotify
+
+以 Linux aarch64 为例。
+
+```
+cd jni/linux/Release/
+make
+
+mv libjnotify.so ../../../src/main/resources/libjnotify_arm64.so
+
+```
+**<arch> 对应关系：**
+- `arm64` - Aarch64
+- `64bit` - X86_64
+- `32bit` - i686
+
+## jnotify
+
+```
+mvn install
+```
+
+# NOTES
+
+## 1.1.0
+
+支持 Linux aarch64 架构，（注：不确定是否影响其它架构）。

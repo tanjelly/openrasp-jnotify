@@ -6,15 +6,19 @@
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
+#ifndef __aarch64__
 #include <linux/inotify.h>
 #include "inotify-syscalls.h"
+#else
+#include <sys/inotify.h>
+#endif
 
 int runLoop(JNIEnv *env, jclass clazz);
 void __attribute__ ((destructor)) 	cleanup(void);
 void dispatch(JNIEnv *env, jclass clazz, struct inotify_event *event);
 
 int init();
-int add_watch(char *path, __u32 mask);
+int add_watch(char *path, __uint32_t mask);
 int remove_watch(int wd);
 
 /*
@@ -106,7 +110,7 @@ int init()
  * see inotify_add_watch for ddocumentation.
  * returns -1 on error, or the watch descriptor otherwise.
  */
-int add_watch(char *path, __u32 mask)
+int add_watch(char *path, __uint32_t mask)
 {
     int wd = inotify_add_watch (fd, path, mask);
     int lastErr = errno;
@@ -199,14 +203,7 @@ void dispatch(JNIEnv *env, jclass clazz, struct inotify_event *event)
 JNIEXPORT jstring JNICALL Java_com_fuxi_javaagent_contentobjects_jnotify_linux_JNotify_1linux_getErrorDesc
   (JNIEnv *env, jclass clazz, jlong errorCode)
 {
-	const char* err;
-	if (errorCode < sys_nerr)
-	{
-		err = sys_errlist[errorCode];
-	}
-	else
-	{
-		err = "Unknown error\0";
-	}
+	char err[32] = { 0 };
+	sprintf(err, "ERROR: %ld", errorCode);
 	return (*env)->NewStringUTF(env, err);
 }
